@@ -1,0 +1,342 @@
+import pygame
+
+# Initialize Pygame
+pygame.init()
+
+# Set the dimensions of the game window
+window_width = 800
+window_height = 600
+
+# Create the game window
+window = pygame.display.set_mode((window_width, window_height))
+
+# Set the title of the game window
+pygame.display.set_caption("Tetris")
+
+# Game loop
+running = True
+while running:
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Update game logic
+
+    # Render the game window
+    window.fill((0, 0, 0))  # Fill the window with black color
+    pygame.display.flip()  # Update the contents of the window
+
+# Quit Pygame
+pygame.quit()
+
+# Set the dimensions of the game grid
+grid_width = 10
+grid_height = 20
+
+# Create an empty game grid
+game_grid = [[0] * grid_width for _ in range(grid_height)]
+
+class Tetrimino:
+    def __init__(self, shape, color):
+        self.shape = shape
+        self.color = color
+        self.rotation_state = 0
+
+    def rotate_clockwise(self):
+        self.rotation_state = (self.rotation_state + 1) % 4
+
+    def rotate_counter_clockwise(self):
+        self.rotation_state = (self.rotation_state - 1) % 4
+
+    def get_current_shape(self):
+        return self.shape[self.rotation_state]
+
+
+class IBlock(Tetrimino):
+    def __init__(self):
+        shape = [
+            [[1, 1, 1, 1]],
+            [[1], [1], [1], [1]],
+            [[1, 1, 1, 1]],
+            [[1], [1], [1], [1]]
+        ]
+        color = (0, 255, 255)
+        super().__init__(shape, color)
+
+
+class JBlock(Tetrimino):
+    def __init__(self):
+        shape = [
+            [[1, 0, 0],
+             [1, 1, 1]],
+
+            [[1, 1],
+             [1, 0],
+             [1, 0]],
+
+            [[1, 1, 1],
+             [0, 0, 1]],
+
+            [[0, 1],
+             [0, 1],
+             [1, 1]]
+        ]
+        color = (0, 0, 255)
+        super().__init__(shape, color)
+
+class LBlock(Tetrimino):
+    def __init__(self):
+        shape = [
+            [[1, 0],
+             [1, 0],
+            [1, 1]],
+
+            [[1, 1, 1],
+             [1, 0, 0]],
+
+            [[1, 1],
+             [0, 1],
+             [0, 1]],
+
+            [[0, 0, 1],
+             [1, 1, 1]]
+        ]
+        color = (255, 165, 0)
+        super().__init__(shape, color)
+
+
+class OBlock(Tetrimino):
+    def __init__(self):
+        shape = [
+            [[1, 1],
+             [1, 1]],
+
+            [[1, 1],
+             [1, 1]],
+
+            [[1, 1],
+             [1, 1]],
+
+            [[1, 1],
+             [1, 1]]
+        ]
+        color = (255, 255, 0)
+        super().__init__(shape, color)
+
+
+class SBlock(Tetrimino):
+    def __init__(self):
+        shape = [
+            [[0, 1, 1],
+             [1, 1, 0]],
+
+            [[1, 0],
+             [1, 1],
+             [0, 1]],
+
+            [[0, 1, 1],
+             [1, 1, 0]],
+
+            [[1, 0],
+             [1, 1],
+             [0, 1]]
+        ]
+        color = (0, 255, 0)
+        super().__init__(shape, color)
+
+
+class TBlock(Tetrimino):
+    def __init__(self):
+        shape = [
+            [[0, 1, 0],
+             [1, 1, 1]],
+
+            [[1, 0],
+             [1, 1],
+             [1, 0]],
+
+            [[1, 1, 1],
+             [0, 1, 0]],
+
+            [[0, 1],
+             [1, 1],
+             [0, 1]]
+        ]
+        color = (128, 0, 128)
+        super().__init__(shape, color)
+
+
+class ZBlock(Tetrimino):
+    def __init__(self):
+        shape = [
+            [[1, 1, 0],
+             [0, 1, 1]],
+
+            [[0, 1],
+             [1, 1],
+             [1, 0]],
+
+            [[1, 1, 0],
+             [0, 1, 1]],
+
+            [[0, 1],
+             [1, 1],
+             [1, 0]]
+        ]
+        color = (255, 0, 0)
+        super().__init__(shape, color)
+
+
+# Define the remaining Tetrimino classes (LBlock, OBlock, SBlock, TBlock, ZBlock) in a similar way
+
+import random
+
+class TetriminoGenerator:
+    def __init__(self):
+        self.tetrimino_types = [IBlock, JBlock, LBlock, OBlock, SBlock, TBlock, ZBlock]
+
+    def generate_random_tetrimino(self):
+        tetrimino_type = random.choice(self.tetrimino_types)
+        return tetrimino_type()
+
+# Assuming you have a game grid defined as 'game_grid'
+
+# Create an instance of the TetriminoGenerator
+tetrimino_generator = TetriminoGenerator()
+
+# Generate a random Tetrimino
+current_tetrimino = tetrimino_generator.generate_random_tetrimino()
+
+# Display the current Tetrimino on the game grid
+current_shape = current_tetrimino.get_current_shape()
+for row in range(len(current_shape)):
+    for col in range(len(current_shape[row])):
+        if current_shape[row][col] == 1:
+            game_grid[row][col] = current_tetrimino.color
+
+import pygame
+import sys
+
+# Initialize Pygame
+pygame.init()
+
+# Set the dimensions of the game window
+window_width = 800
+window_height = 600
+
+# Create the game window
+window = pygame.display.set_mode((window_width, window_height))
+
+# Set the title of the game window
+pygame.display.set_caption("Tetris")
+
+# Define colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
+# Game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                # Handle left arrow key press
+                # Move the Tetrimino left
+                pass
+            elif event.key == pygame.K_RIGHT:
+                # Handle right arrow key press
+                # Move the Tetrimino right
+                pass
+            elif event.key == pygame.K_DOWN:
+                # Handle down arrow key press
+                # Move the Tetrimino down (increase its vertical speed)
+                pass
+            elif event.key == pygame.K_UP:
+                # Handle up arrow key press
+                # Rotate the Tetrimino clockwise
+                pass
+
+    # Update game logic
+
+    # Render the game window
+    window.fill(BLACK)  # Fill the window with black color
+    # Draw the game grid and Tetriminos
+    # ...
+
+    pygame.display.flip()  # Update the contents of the window
+
+# Quit Pygame
+pygame.quit()
+sys.exit()
+
+
+def check_collision(tetrimino, game_grid, existing_tetriminos):
+    current_shape = tetrimino.get_current_shape()
+    tetrimino_x = tetrimino.x
+    tetrimino_y = tetrimino.y
+
+    # Check collision with game grid boundaries
+    for row in range(len(current_shape)):
+        for col in range(len(current_shape[row])):
+            if current_shape[row][col] != 0:
+                if (
+                    tetrimino_x + col < 0
+                    or tetrimino_x + col >= len(game_grid[0])
+                    or tetrimino_y + row >= len(game_grid)
+                ):
+                    return True
+
+    # Check collision with existing Tetriminos
+    for row in range(len(current_shape)):
+        for col in range(len(current_shape[row])):
+            if current_shape[row][col] != 0:
+                grid_row = tetrimino_y + row
+                grid_col = tetrimino_x + col
+                if game_grid[grid_row][grid_col] != 0 or (grid_row, grid_col) in existing_tetriminos:
+                    return True
+
+    return False
+
+
+def clear_completed_rows(game_grid):
+    completed_rows = []
+    for row in range(len(game_grid)):
+        if all(cell != 0 for cell in game_grid[row]):
+            completed_rows.append(row)
+
+    for row in completed_rows:
+        del game_grid[row]
+        empty_row = [0] * len(game_grid[0])
+        game_grid.insert(0, empty_row)
+
+    return len(completed_rows)
+
+
+def calculate_score(cleared_rows, level):
+    scores = [40, 100, 300, 1200]  # Scores for clearing 1, 2, 3, 4 rows respectively
+    score = scores[cleared_rows - 1] * (level + 1)
+    return score
+
+
+def calculate_level(cleared_rows):
+    level = cleared_rows // 10  # Increase level every 10 cleared rows
+    return level
+
+
+def is_game_over(tetrimino, game_grid, existing_tetriminos):
+    current_shape = tetrimino.get_current_shape()
+    tetrimino_x = tetrimino.x
+    tetrimino_y = tetrimino.y
+
+    for row in range(len(current_shape)):
+        for col in range(len(current_shape[row])):
+            if current_shape[row][col] != 0:
+                grid_row = tetrimino_y + row
+                grid_col = tetrimino_x + col
+                if game_grid[grid_row][grid_col] != 0 or (grid_row, grid_col) in existing_tetriminos:
+                    return True
+
+    return False
